@@ -12,7 +12,19 @@ cp .env.example .env && docker compose up -d
 
 前端：<http://localhost:20113>
 
+## 播放时刻合成规则（舞台预览）
 
+合成引擎在 `frontend/src/utils/compositionEngine.ts`，每个播放时刻按以下顺序逐条压台，靠后的覆盖靠前的：
+
+1. 普通轨道先铺，锁定轨道整组后压 —— 锁定轨道始终压住普通轨道；
+2. 同组内按图层从低到高覆盖；
+3. 同层先开始的先铺；同一时刻开始的场景，优先级高的后覆盖；
+4. 停用场景（`DISABLED`）和停用灯具（`enabled=false`）不参与合成；
+5. 渐变中的轨道按 `fade_in_ms` 进度，从低层已合成状态插值到目标状态。
+
+调整场景 / 轨道 / 灯具时只增量重算受影响的灯具（`stores/CompositionStore.ts` 的 `recomputeFixtures`，受影响集合由引擎的 `affectedFixtureIdsForScene/Track` 计算）；移动播放头才全量重算。
+
+合成快照和灯具 / 场景 / 轨道数据都写入浏览器 localStorage（键名集中在 `frontend/src/constants/storageKeys.ts`），重新进入页面自动恢复，可继续检查。
 
 ## 本地开发方式
 

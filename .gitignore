@@ -7,6 +7,7 @@ build/
 .idea/
 .vscode/
 coverage/
+*.tsbuildinfo
 __pycache__/
 .pytest_cache/
 target/
