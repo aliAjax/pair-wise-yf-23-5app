@@ -1,21 +1,15 @@
-import { mockData } from "../mocks/seedData";
 import type { Fixture } from "../types/Fixture";
+import { fixtureRepository } from "../db/entityRepositories";
+import { LOG_TEMPLATES } from "../constants/logTemplates";
 
 const endpoint = "/api/fixture";
+void endpoint;
 
 export async function listFixture(): Promise<Fixture[]> {
-  if (typeof fetch !== "undefined" && endpoint.startsWith("/api") && false) {
-    try {
-      const res = await fetch(endpoint);
-      if (res.ok) return await res.json();
-    } catch {
-      // Local mock fallback keeps the UI available during offline review.
-    }
-  }
-  return [...(mockData.fixture as unknown as Fixture[])];
+  return fixtureRepository.list();
 }
 
-export async function saveFixture(payload: Fixture) {
-  console.info("save Fixture", payload);
-  return payload;
+export async function saveFixture(payload: Fixture): Promise<Fixture> {
+  console.info(LOG_TEMPLATES.Fixture[1], payload.id);
+  return fixtureRepository.save(payload);
 }

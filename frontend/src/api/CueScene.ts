@@ -1,21 +1,15 @@
-import { mockData } from "../mocks/seedData";
 import type { CueScene } from "../types/CueScene";
+import { cueSceneRepository } from "../db/entityRepositories";
+import { LOG_TEMPLATES } from "../constants/logTemplates";
 
 const endpoint = "/api/cue-scene";
+void endpoint;
 
 export async function listCueScene(): Promise<CueScene[]> {
-  if (typeof fetch !== "undefined" && endpoint.startsWith("/api") && false) {
-    try {
-      const res = await fetch(endpoint);
-      if (res.ok) return await res.json();
-    } catch {
-      // Local mock fallback keeps the UI available during offline review.
-    }
-  }
-  return [...(mockData.cueScene as unknown as CueScene[])];
+  return cueSceneRepository.list();
 }
 
-export async function saveCueScene(payload: CueScene) {
-  console.info("save CueScene", payload);
-  return payload;
+export async function saveCueScene(payload: CueScene): Promise<CueScene> {
+  console.info(LOG_TEMPLATES.CueScene[1], payload.id);
+  return cueSceneRepository.save(payload);
 }
